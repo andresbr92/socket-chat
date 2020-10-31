@@ -2,13 +2,13 @@ let socket = io();
 
 let params = new URLSearchParams(window.location.search)
 
-if (!params.has('nombre')) { 
+if (!params.has('name')) { 
     window.location = 'index.html'
     throw new Error ('Name necesary')
 }
 
 let user = {
-    name: params.get('nombre')
+    name: params.get('name')
 }
  
 
@@ -37,8 +37,13 @@ socket.emit('enviarMensaje', {
 });
 
 // Escuchar información
-socket.on('enviarMensaje', function(mensaje) {
+socket.on('creteMessage', function(message) {
 
-    console.log('Servidor:', mensaje);
+    console.log('Servidor:', message);
 
 });
+
+//changes on the list of the room
+socket.on('personList', function (usersOnChat) { 
+    console.log(usersOnChat)
+})

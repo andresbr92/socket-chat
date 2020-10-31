@@ -9,7 +9,7 @@ class Users {
         return this.personsInRoom
     }
     getPerson(id) { 
-        let person = this.personsInRoom.filter(person => person.id === id[0])
+        let person = this.personsInRoom.filter(thePerson => thePerson.id === id)[0]
         return person
     }
     getAllPersons() {
@@ -20,7 +20,7 @@ class Users {
     }
     removePerson(id) { 
         let removedPerson = this.getPerson(id)
-
+        
         this.personsInRoom = this.personsInRoom.filter(personToRemove => personToRemove.id != id)
 
         return removedPerson
