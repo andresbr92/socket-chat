@@ -7,7 +7,7 @@ const users = new Users()
 io.on('connection', (client) => {
 
     client.on('enterChat', (data, callback) => { 
-       // console.log('user conected', data)
+
         if (!data.name || !data.room) {
             return callback({
                 error: true,
@@ -15,11 +15,11 @@ io.on('connection', (client) => {
             })
         }
 
-        client.join(data.sala)
+        client.join(data.room)
 
         let usersOnChat = users.addPerson(client.id, data.name, data.room)
 
-        client.broadcast.emit('personList', users.getAllPersons())
+        client.broadcast.to(data.room).emit('personList', users.getPersonsRoom(data.room))
 
         callback(usersOnChat)
     })
@@ -28,7 +28,7 @@ io.on('connection', (client) => {
         let person = users.getPerson(client.id)
 
         let message = createMessage(person.name, data.message)
-        client.broadcast.emit('createMessage', message)
+        client.broadcast.to(person.room).emit('createMessage', message)
     })
 
     //CLIENT ON DISCONNECT
@@ -36,8 +36,8 @@ io.on('connection', (client) => {
         
         let removedPerson = users.removePerson(client.id)
 
-        client.broadcast.emit('creteMessage', createMessage('Administrator', `${removedPerson.name} has left`))
-        client.broadcast.emit('personList', users.getAllPersons())
+        client.broadcast.to(removedPerson.room).emit('creteMessage', createMessage('Administrator', `${removedPerson.name} has left`))
+        client.broadcast.to(removedPerson.room).emit('personList', users.getPersonsRoom(removedPerson.room))
     })
 
     //PRIVATE MESSAGES
